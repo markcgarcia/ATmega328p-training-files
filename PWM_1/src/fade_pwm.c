@@ -1,20 +1,22 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/delay.h>
 
 int main() {
 
-    // Allow PORTB to be write instead of read
-    DDRB |= (1 << PB5);
+    // Allow PORTD to be write instead of read
+    DDRD |= (1 << DDD6);
 
     // Setup Timer0 mode to PWM phase correct
+    // You actually want fast PWM
     TCCR0A |= (1 << COM0A1) | (0 << COM0A0);
 
     TCCR0A |= (0 << WGM01) | (1 << WGM00);
-    TCCR0B |= (1 << WGM02);
+    TCCR0B |= (0 << WGM02);
 
     // Set prescaler (256)
     // Acts as a clock divider
-    TCCR0B |= (1 << CS02) | (0 << CS01) | (0 << CS00);
+    TCCR0B |= (0 << CS02) | (1 << CS01) | (0 << CS00);
 
     // Enable interrupts
     // TIMSK0 ("Timer/Counter Interrupt Mask Register")
@@ -26,18 +28,19 @@ int main() {
     TCNT0 = 0;
     OCR0A = 128;
 
-    uint8_t multiplier = 1;
+    uint8_t brightness = 128;
+    int8_t fadeAmount = 5;
 
     while(1) {
         // Going up or down?
-        if (OCR0A + 5 > 255) {
-          multiplier = -1;
-        }
-        if (OCR0A - 5 < 0) {
-          multiplier = 1;
+        if (brightness >= 255 || brightness <= 0) {
+          fadeAmount = -fadeAmount;
         }
 
         // Change the duty cycle
-        OCR0A += 5 * multiplier;
+        brightness += fadeAmount;
+        OCR0A = brightness;
+        
+        _delay_ms(50);
     }
 }
