@@ -1,7 +1,10 @@
 #include <avr/io.h>
 
 void delay(int ms);
-
+/* This is a basic LED fade program.
+   We use Timer0 to act as a delay and Timer1 to
+   act as our PWM controller. */
+   
 int main() {
 
     /* Setup Timer1 for our delay function.
