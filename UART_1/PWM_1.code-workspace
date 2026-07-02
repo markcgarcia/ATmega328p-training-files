@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../PWM_1"
+		},
+		{
+			"name": "UART_1",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
